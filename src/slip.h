@@ -12,7 +12,7 @@ typedef struct state_t {
 	double qd[nQ];
 	double qdd[nQ];
 	double u[nU];
-	double M[nQ*nQ];
+	//double M[nQ*nQ];
 } state_t;
 
 

@@ -34,7 +34,7 @@ slip_t* init(void)
 	m_bMJActivated = true;
 
     char error[1000] = "Could not load binary model";
-    m = mj_loadXML("models/Monopod.xml", 0, error, 1000);
+    m = mj_loadXML("models/Monopod.xml", 0, error, 1000); // allocates and initializes mjModel and returns a pointer to it. 
     if (!m)
     {    	
         mju_error("Failed to Load xml model");
@@ -42,13 +42,8 @@ slip_t* init(void)
     }
 
     slip_t *s = calloc(1, sizeof(slip_t));
-    s->d = mj_makeData(m);
-
-//	for (int i = 0; i < nQ; i++)
-//		printf("%f\t", s->d->qpos[i]);
-//	printf("\n");
-//
-//	printf("%f\t%f\n", m->body_pos[m->jnt_bodyid[5]*3 + 2], m->body_pos[m->jnt_bodyid[7]*3 + 2]);
+    s->d = mj_makeData(m); // d is a pointer to mjData
+// Once both mjModel and mjData are allocated and initialized, we can call the various simulation functions. 
 
     return s;
 }
@@ -56,7 +51,7 @@ slip_t* init(void)
 void forward(slip_t* s, state_t* state)
 {
 
-	mju_zero(s->d->xfrc_applied, m->nbody*6);
+	mju_zero(s->d->xfrc_applied, m->nbody*6); //clear applied forces
 	//wipe out data and replace with state info
 	for (int i = 0; i < nQ; i++)
 	{
@@ -86,16 +81,16 @@ void forward(slip_t* s, state_t* state)
 	}
 
 	//mass matrix
-	mjtNum M[nQ*nQ];
-	mj_fullM(m, M, s->d->qM);
-	for (int i = 0; i < nQ*nQ; i++)
-		state->M[i] = M[i];
+	//mjtNum M[nQ*nQ];
+	//mj_fullM(m, M, s->d->qM);
+	//for (int i = 0; i < nQ*nQ; i++)
+	//	state->M[i] = M[i];
 
 }
 
 void step(slip_t* s, state_t* state)
 {
-	mj_step(m, s->d);
+	mj_step(m, s->d); // pass the mjModel and mjData
 //	for (int i = 0; i < nQ; i++)
 //		printf("%f\t", s->d->qpos[i]);
 //	printf("\n");

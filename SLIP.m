@@ -32,7 +32,7 @@ classdef SLIP < handle
            
         end
         
-        function [left_foot, right_foot] = get_foot_pos(obj, q, qd)
+        function [left_foot] = get_foot_pos(obj, q, qd)
             
             state = obj.blank_state();
             state.q = q;
@@ -90,17 +90,11 @@ classdef SLIP < handle
         end
         
         
-        function [qdd, cpos, cvel, cacc, Jc_left, Jc_right, M] = dynamics(obj, state)
+        function [qdd] = dynamics(obj, state)
             state = libpointer('state_t', state);
             calllib('libslip', 'forward', obj.s, state);
             temp = state.Value;
-            qdd = temp.qdd;
-            cpos = temp.cpos;
-            cvel = temp.cvel;
-            cacc = temp.cacc;
-            Jc_left = reshape(temp.Jc(1:obj.DOF*obj.nQ),  obj.nQ, obj.DOF);
-            Jc_right = reshape(temp.Jc(obj.DOF*obj.nQ+1:end), obj.nQ, obj.DOF);
-            M = reshape(temp.M, obj.nQ, obj.nQ);
+            qdd = temp.qdd;           
         end
         
         function set_start_end(obj, s0, sN, s0idx, sNidx)
